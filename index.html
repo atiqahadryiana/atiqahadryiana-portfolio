@@ -1,0 +1,43 @@
+<!doctype html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <meta name="theme-color" content="#110d20" />
+    <meta
+      name="description"
+      content="A software engineering student’s exploration of thoughtful software, human-centered design, and technology for communities."
+    />
+    <meta property="og:title" content="Portfolio — Meaningful digital experiences" />
+    <meta property="og:type" content="website" />
+    <meta
+      property="og:description"
+      content="Explore software concepts, technical interests, and a student’s journey at UTHM."
+    />
+    <meta property="og:image" content="/images/social-card.svg" />
+    <link rel="icon" type="image/png" href="/brand/aa-logo.png" />
+    <link rel="apple-touch-icon" href="/brand/aa-logo.png" />
+    <script>
+      try {
+        const preference = localStorage.getItem('portfolio-theme');
+        document.documentElement.dataset.theme =
+          preference === 'dark' || preference === 'light'
+            ? preference
+            : matchMedia('(prefers-color-scheme: light)').matches
+              ? 'light'
+              : 'dark';
+      } catch {
+        document.documentElement.dataset.theme = 'dark';
+      }
+    </script>
+    <title>Portfolio — Meaningful digital experiences</title>
+  </head>
+  <body>
+    <div id="root"></div>
+    <noscript
+      >This portfolio needs JavaScript for navigation and interactions. Enable JavaScript to explore
+      the projects and contact options.</noscript
+    >
+    <script type="module" src="/src/main.jsx"></script>
+  </body>
+</html>
