@@ -9,7 +9,8 @@ export default function Artwork({ project, large = false }) {
       <img
         src={!failed && source ? source : `/images/${project.art || 'fallback'}.svg`}
         alt={!failed && source ? `${project.title} project image` : ''}
-        loading="lazy"
+        loading={large ? 'eager' : 'lazy'}
+        fetchPriority={large ? 'high' : 'auto'}
         width="800"
         height="500"
         onError={() => {

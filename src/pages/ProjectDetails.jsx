@@ -6,12 +6,17 @@ import { imageUrl, isWebUrl } from '../utils/content';
 import Artwork from '../components/Artwork';
 import NotFound from './NotFound';
 
-function DetailBlock({ title, children }) {
+function DetailBlock({ number, title, children }) {
   return (
-    <div className="detail-block">
-      <h2>{title}</h2>
-      {children || <p className="muted">Details coming soon.</p>}
-    </div>
+    <section className="detail-block">
+      <span className="detail-block-number" aria-hidden="true">
+        {number}
+      </span>
+      <div>
+        <h2>{title}</h2>
+        {children || <p className="detail-pending">Not documented yet.</p>}
+      </div>
+    </section>
   );
 }
 export default function ProjectDetails() {
@@ -29,18 +34,25 @@ export default function ProjectDetails() {
         Back to projects
       </Link>
       <div className="detail-heading">
-        <div>
-          <span className="small-label">{project.category}</span>
+        <div className="detail-heading-copy">
+          <div className="detail-heading-meta">
+            <span className="small-label">Project {project.number}</span>
+            <span aria-hidden="true">/</span>
+            <span>{project.category}</span>
+          </div>
           <h1>
             {project.title}
             <span className="accent">.</span>
           </h1>
           <p>{project.summary}</p>
         </div>
-        <span className="status">
-          <span />
-          {project.status}
-        </span>
+        <div className="detail-status">
+          <span className="small-label">Current stage</span>
+          <span className="status">
+            <span />
+            {project.status}
+          </span>
+        </div>
       </div>
       <Artwork key={slug} project={project} large />
       <p className="project-caveat">
@@ -49,17 +61,19 @@ export default function ProjectDetails() {
       </p>
       <div className="detail-layout">
         <div className="detail-story">
-          <DetailBlock title="The overview">
+          <DetailBlock number="01" title="The overview">
             {project.overview && <p>{project.overview}</p>}
           </DetailBlock>
-          <DetailBlock title="The problem">
+          <DetailBlock number="02" title="The problem">
             {project.problem && <p>{project.problem}</p>}
           </DetailBlock>
-          <DetailBlock title="Who it’s for">{project.users && <p>{project.users}</p>}</DetailBlock>
-          <DetailBlock title="The approach">
+          <DetailBlock number="03" title="Who it’s for">
+            {project.users && <p>{project.users}</p>}
+          </DetailBlock>
+          <DetailBlock number="04" title="The approach">
             {project.approach && <p>{project.approach}</p>}
           </DetailBlock>
-          <DetailBlock title="Core features">
+          <DetailBlock number="05" title="Core features">
             {project.features.length > 0 && (
               <>
                 <p className="muted">Planned scope; implementation is not confirmed.</p>
@@ -71,10 +85,10 @@ export default function ProjectDetails() {
               </>
             )}
           </DetailBlock>
-          <DetailBlock title="Challenges & lessons">
+          <DetailBlock number="06" title="Challenges & lessons">
             {project.challenges && <p>{project.challenges}</p>}
           </DetailBlock>
-          <DetailBlock title="Outcome & next steps">
+          <DetailBlock number="07" title="Outcome & next steps">
             {project.outcome && <p>{project.outcome}</p>}
           </DetailBlock>
           {project.gallery.filter((item) => imageUrl(item.src)).length > 0 && (
@@ -102,6 +116,7 @@ export default function ProjectDetails() {
           )}
         </div>
         <aside className="detail-sidebar">
+          <span className="small-label">Project file</span>
           <h2>At a glance</h2>
           <dl>
             <dt>Status</dt>

@@ -9,8 +9,9 @@ import ContactForm from '../src/components/ContactForm';
 import ProjectDetails from '../src/pages/ProjectDetails';
 import Hero from '../src/sections/Hero';
 import Artwork from '../src/components/Artwork';
+import ProjectCard from '../src/components/ProjectCard';
 import App from '../src/App';
-import { profile } from '../src/data/portfolio';
+import { profile, projects } from '../src/data/portfolio';
 import { isEmail, isFormEndpoint, isWebUrl, publicAsset } from '../src/utils/content';
 
 const wrap = (element, route = '/') =>
@@ -41,6 +42,29 @@ describe('Project exploration', () => {
     expect(screen.queryByRole('link', { name: 'View source' })).not.toBeInTheDocument();
     expect(screen.queryByRole('link', { name: 'Live demo' })).not.toBeInTheDocument();
     expect(screen.getByText(/No completed application/)).toBeInTheDocument();
+  });
+  it('links project cards to the website, then GitHub, before the internal detail page', () => {
+    const project = {
+      ...projects[0],
+      demo: 'https://example.com/project',
+      github: 'https://github.com/example/project',
+    };
+    const { rerender } = wrap(<ProjectCard project={project} />);
+    expect(screen.getByRole('link', { name: project.title })).toHaveAttribute('href', project.demo);
+    expect(screen.getByRole('link', { name: project.title })).toHaveAttribute(
+      'rel',
+      'noopener noreferrer',
+    );
+
+    rerender(
+      <MemoryRouter>
+        <ProjectCard project={{ ...project, demo: 'ADD_DEMO_URL' }} />
+      </MemoryRouter>,
+    );
+    expect(screen.getByRole('link', { name: project.title })).toHaveAttribute(
+      'href',
+      project.github,
+    );
   });
   it.each(['/missing', '/projects/missing'])('handles unknown route %s', async (route) => {
     wrap(<App />, route);
