@@ -31,12 +31,26 @@ for (const width of [360, 390, 768, 1024, 1440]) {
         .click();
       await expect(menu).toHaveAttribute('aria-expanded', 'false');
     }
-    await page.getByRole('button', { name: 'AI/ML', exact: true }).click();
+    await page.getByRole('button', { name: 'Data', exact: true }).click();
     await expect(page.locator('.project-card')).toHaveCount(2);
-    await page.getByRole('link', { name: 'SmartBunda', exact: true }).click();
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('SmartBunda');
+    await expect(
+      page.getByRole('heading', { name: 'Breast cancer dataset profiling' }),
+    ).toBeVisible();
+    await expect(
+      page.getByRole('link', {
+        name: 'View GitHub repository for Breast cancer dataset profiling',
+      }),
+    ).toHaveAttribute('href', 'https://github.com/atiqahadryiana/BreastCancer');
+    await expect(page.locator('.project-card img')).toHaveCount(0);
+    await page.goto('/projects/tuition-management-system');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'Tuition Management System',
+    );
+    await expect(page.locator('.project-detail img')).toHaveCount(0);
     await page.reload();
-    await expect(page.getByRole('heading', { level: 1 })).toContainText('SmartBunda');
+    await expect(page.getByRole('heading', { level: 1 })).toContainText(
+      'Tuition Management System',
+    );
     expect(
       await page.evaluate(() => document.documentElement.scrollWidth <= window.innerWidth),
     ).toBe(true);

@@ -50,8 +50,7 @@ async function mockAdmin(page, { signedIn = true, failResume = false } = {}) {
     if (path.endsWith('/profile')) content.profile = { ...content.profile, ...body.profile };
     if (path.endsWith('/projects')) {
       const index = content.projects.findIndex((item) => item.slug === body.originalSlug);
-      if (index === -1)
-        content.projects.push({ ...body.project, number: '05', art: 'fallback', gallery: [] });
+      if (index === -1) content.projects.push({ ...body.project, number: '05' });
       else content.projects[index] = { ...content.projects[index], ...body.project };
     }
     content.revision = `test-${++revision}`;

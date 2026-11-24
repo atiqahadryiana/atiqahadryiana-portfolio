@@ -36,7 +36,6 @@ const labels = {
   caveat: 'Scope or limitations',
   github: 'Source code URL',
   demo: 'Live demo URL',
-  image: 'Project image URL',
 };
 
 function ProjectForm({ project, content, save, onSaved, onCancel }) {
@@ -166,11 +165,6 @@ function ProjectForm({ project, content, save, onSaved, onCancel }) {
             {field('github')}
             {field('demo')}
           </div>
-          {field(
-            'image',
-            false,
-            'Optional public HTTPS image URL. Without one, the project uses a labeled concept illustration.',
-          )}
           <details className="admin-case-study">
             <summary>Case study details</summary>
             {[

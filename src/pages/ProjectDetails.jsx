@@ -2,8 +2,7 @@ import { useEffect } from 'react';
 import { Link, useParams } from 'react-router-dom';
 import { ArrowLeft, ArrowUpRight, GitFork, Lightbulb } from 'lucide-react';
 import { projects } from '../data/portfolio';
-import { imageUrl, isWebUrl } from '../utils/content';
-import Artwork from '../components/Artwork';
+import { isWebUrl } from '../utils/content';
 import NotFound from './NotFound';
 
 function DetailBlock({ number, title, children }) {
@@ -54,7 +53,6 @@ export default function ProjectDetails() {
           </span>
         </div>
       </div>
-      <Artwork key={slug} project={project} large />
       <p className="project-caveat">
         <Lightbulb size={19} aria-hidden="true" />
         {project.caveat}
@@ -91,29 +89,6 @@ export default function ProjectDetails() {
           <DetailBlock number="07" title="Outcome & next steps">
             {project.outcome && <p>{project.outcome}</p>}
           </DetailBlock>
-          {project.gallery.filter((item) => imageUrl(item.src)).length > 0 && (
-            <DetailBlock title="Project gallery">
-              <div className="detail-gallery">
-                {project.gallery
-                  .filter((item) => imageUrl(item.src))
-                  .map((item) => (
-                    <figure key={item.src}>
-                      <img
-                        src={item.src}
-                        alt={item.alt}
-                        loading="lazy"
-                        onError={(event) => {
-                          event.currentTarget.hidden = true;
-                        }}
-                      />
-                      <figcaption>
-                        {item.caption || 'Project image unavailable if not shown.'}
-                      </figcaption>
-                    </figure>
-                  ))}
-              </div>
-            </DetailBlock>
-          )}
         </div>
         <aside className="detail-sidebar">
           <span className="small-label">Project file</span>

@@ -14,7 +14,7 @@ export default function Projects() {
           label="The project shelf"
           title="Ideas taking"
           accent="shape."
-          description="A selection of projects, concepts, and explorations. Each with its own purpose and story."
+          description="Each project listed by name, description, tech stack, and its GitHub repository."
         />
         <div className="project-toolbar">
           <div className="filter-group" role="group" aria-label="Filter projects">
@@ -41,7 +41,6 @@ export default function Projects() {
         {!shown.length && (
           <p className="empty-state">No projects in this category yet. Try another filter.</p>
         )}
-        <p className="section-footnote">Each project includes its current status and scope.</p>
       </Reveal>
     </section>
   );

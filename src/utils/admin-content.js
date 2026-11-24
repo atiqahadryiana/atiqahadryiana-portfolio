@@ -5,6 +5,7 @@ export const projectStatuses = [
   'Prototype',
   'Completed',
   'Details pending',
+  'Published repository',
 ];
 export const projectTextFields = [
   'title',
@@ -23,7 +24,6 @@ export const projectTextFields = [
   'caveat',
   'github',
   'demo',
-  'image',
 ];
 export const profileFields = [
   'name',
@@ -70,7 +70,7 @@ export function validateProject(project, filters) {
       project[key].some((item) => !text(item, 300) || !item.trim())
     )
       errors[key] = 'Use up to 40 entries, each under 300 characters.';
-  for (const key of ['github', 'demo', 'image'])
+  for (const key of ['github', 'demo'])
     if (project?.[key] && !webLink(project[key]))
       errors[key] = 'Use a public HTTPS URL, or leave blank.';
   return errors;

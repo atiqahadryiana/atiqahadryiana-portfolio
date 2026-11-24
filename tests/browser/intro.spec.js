@@ -40,8 +40,8 @@ for (const width of [390, 1440]) {
     await expect(page.locator('#main-content')).toBeFocused();
     await page.goto('/#projects');
     await expect(page.getByRole('progressbar')).toHaveCount(0);
-    await page.goto('/projects/smartbunda');
-    await expect(page.getByRole('heading', { level: 1 })).toHaveText('SmartBunda.');
+    await page.goto('/projects/tuition-management-system');
+    await expect(page.getByRole('heading', { level: 1 })).toHaveText('Tuition Management System.');
     await expect(page.getByRole('progressbar')).toHaveCount(0);
   });
 }
