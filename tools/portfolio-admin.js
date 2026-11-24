@@ -265,11 +265,7 @@ export default function portfolioAdmin() {
                 });
               const previous =
                 index === -1
-                  ? {
-                      number: String(current.projects.length + 1).padStart(2, '0'),
-                      art: 'fallback',
-                      gallery: [],
-                    }
+                  ? { number: String(current.projects.length + 1).padStart(2, '0') }
                   : current.projects[index];
               const project = { ...previous };
               for (const field of projectTextFields)

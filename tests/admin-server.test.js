@@ -126,13 +126,14 @@ describe('Authenticated local portfolio administration', () => {
       summary: 'An actual test entry.',
       github: '',
       demo: '',
-      image: '',
     };
     let response = await request('projects', { project, revision: current.revision }, auth);
     expect(response.status).toBe(200);
     current = await response.json();
     const entry = current.projects.at(-1);
-    expect(entry).toMatchObject({ slug: project.slug, number: '05', art: 'fallback', gallery: [] });
+    expect(entry).toMatchObject({ slug: project.slug, number: '05' });
+    expect(entry).not.toHaveProperty('image');
+    expect(entry).not.toHaveProperty('gallery');
     expect((await request('projects', { project, revision: current.revision }, auth)).status).toBe(
       409,
     );

@@ -8,7 +8,6 @@ import Navbar from '../src/components/Navbar';
 import ContactForm from '../src/components/ContactForm';
 import ProjectDetails from '../src/pages/ProjectDetails';
 import Hero from '../src/sections/Hero';
-import Artwork from '../src/components/Artwork';
 import ProjectCard from '../src/components/ProjectCard';
 import App from '../src/App';
 import { profile, projects } from '../src/data/portfolio';
@@ -17,54 +16,64 @@ import { isEmail, isFormEndpoint, isWebUrl, publicAsset } from '../src/utils/con
 const wrap = (element, route = '/') =>
   render(<MemoryRouter initialEntries={[route]}>{element}</MemoryRouter>);
 describe('Project exploration', () => {
-  it('filters overlapping categories and restores all projects', async () => {
+  it('filters projects by web, mobile, and data work', async () => {
     const user = userEvent.setup();
     wrap(<Projects />);
     expect(screen.getAllByRole('article')).toHaveLength(4);
-    await user.click(screen.getByRole('button', { name: 'AI/ML', exact: true }));
+    await user.click(screen.getByRole('button', { name: 'Data', exact: true }));
     expect(screen.getAllByRole('article')).toHaveLength(2);
-    expect(screen.queryByRole('heading', { name: 'Task Manager' })).not.toBeInTheDocument();
+    expect(
+      screen.getByRole('heading', { name: 'Breast cancer dataset profiling' }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('heading', { name: 'Ames housing analysis' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'Web', exact: true }));
-    expect(screen.getAllByRole('article')).toHaveLength(3);
-    expect(screen.queryByRole('heading', { name: 'SmartBunda' })).not.toBeInTheDocument();
+    expect(screen.getAllByRole('article')).toHaveLength(1);
+    expect(screen.getByRole('heading', { name: 'Tuition Management System' })).toBeInTheDocument();
     await user.click(screen.getByRole('button', { name: 'All', exact: true }));
     expect(screen.getAllByRole('article')).toHaveLength(4);
-    expect(screen.getByRole('link', { name: 'SmartBunda' })).toHaveAttribute(
-      'href',
-      '/projects/smartbunda',
-    );
-  });
-  it('renders a detail page and hides missing source/demo links', async () => {
-    wrap(<App />, '/projects/smartbunda');
     expect(
-      await screen.findByRole('heading', { level: 1, name: /SmartBunda/ }),
-    ).toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'View source' })).not.toBeInTheDocument();
-    expect(screen.queryByRole('link', { name: 'Live demo' })).not.toBeInTheDocument();
-    expect(screen.getByText(/No completed application/)).toBeInTheDocument();
+      screen.getByRole('link', { name: 'View GitHub repository for Tuition Management System' }),
+    ).toHaveAttribute('href', 'https://github.com/atiqahadryiana/Tuition-Management-System');
   });
-  it('links project cards to the website, then GitHub, before the internal detail page', () => {
-    const project = {
-      ...projects[0],
-      demo: 'https://example.com/project',
-      github: 'https://github.com/example/project',
-    };
-    const { rerender } = wrap(<ProjectCard project={project} />);
-    expect(screen.getByRole('link', { name: project.title })).toHaveAttribute('href', project.demo);
-    expect(screen.getByRole('link', { name: project.title })).toHaveAttribute(
-      'rel',
-      'noopener noreferrer',
-    );
-
-    rerender(
-      <MemoryRouter>
-        <ProjectCard project={{ ...project, demo: 'ADD_DEMO_URL' }} />
-      </MemoryRouter>,
-    );
-    expect(screen.getByRole('link', { name: project.title })).toHaveAttribute(
+  it('shows each project as text, stack, and an optional repository link with no artwork', () => {
+    const { container } = wrap(<Projects />);
+    expect(screen.getByRole('heading', { name: 'MindBloom' })).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'MindBloom' })).toHaveAttribute(
       'href',
-      project.github,
+      '/projects/mindbloom',
     );
+    expect(
+      screen.getByText(/mood tracking, task planning, a calendar, and student resources/i),
+    ).toBeInTheDocument();
+    expect(screen.getByLabelText('Technologies used in MindBloom')).toHaveTextContent('Flutter');
+    expect(
+      screen.getByRole('link', { name: 'View GitHub repository for MindBloom' }),
+    ).toHaveAttribute('href', 'https://github.com/atiqahadryiana/Mindbloom');
+    expect(container.querySelector('.project-card img')).toBeNull();
+    expect(container.querySelector('.project-card .project-meta')).toBeNull();
+    expect(container.querySelector('.project-card .project-goal')).toBeNull();
+  });
+  it('renders a detail page with its configured repository and no missing demo link', async () => {
+    wrap(<App />, '/projects/tuition-management-system');
+    expect(
+      await screen.findByRole('heading', { level: 1, name: /Tuition Management System/ }),
+    ).toBeInTheDocument();
+    expect(screen.getByRole('link', { name: 'View source' })).toHaveAttribute(
+      'href',
+      'https://github.com/atiqahadryiana/Tuition-Management-System',
+    );
+    expect(screen.queryByRole('link', { name: 'Live demo' })).not.toBeInTheDocument();
+    expect(
+      screen.getByText('See the public repository README for the project details.'),
+    ).toBeInTheDocument();
+  });
+  it('keeps project titles plain and hides an unconfigured GitHub action', () => {
+    const project = { ...projects[0], github: 'ADD_GITHUB_URL' };
+    wrap(<ProjectCard project={project} />);
+    expect(screen.getByRole('heading', { level: 3, name: project.title })).toBeInTheDocument();
+    expect(
+      screen.queryByRole('link', { name: `View GitHub repository for ${project.title}` }),
+    ).not.toBeInTheDocument();
   });
   it.each(['/missing', '/projects/missing'])('handles unknown route %s', async (route) => {
     wrap(<App />, route);
@@ -202,22 +211,6 @@ describe('Contact form', () => {
   });
 });
 describe('Safe configuration', () => {
-  it('replaces a failed project image with the concept illustration', () => {
-    const { container } = render(
-      <Artwork
-        project={{
-          title: 'Example project',
-          number: '05',
-          image: 'https://example.com/missing.webp',
-          art: 'fallback',
-        }}
-      />,
-    );
-    const image = screen.getByRole('img', { name: 'Example project project image' });
-    fireEvent.error(image);
-    expect(container.querySelector('img')).toHaveAttribute('src', '/images/fallback.svg');
-    expect(screen.getByText('Concept illustration')).toBeInTheDocument();
-  });
   it('accepts only web links, real public files and supported form endpoints', () => {
     expect(isWebUrl('javascript:alert(1)')).toBe(false);
     expect(isWebUrl('ADD_DEMO_URL')).toBe(false);
